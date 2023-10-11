@@ -3,9 +3,15 @@
 #include <string.h>
 
 typedef struct{
-    char *id;
-    char *idEq;
-    char *idVenda;
+    char *nome;
+    int idEq;
+    float vendas;
+}gerente;
+
+typedef struct{
+    int id;
+    int idEq;
+    int idVenda;
     char *nome;
     char *cargo;
     double valVenda;
@@ -18,18 +24,19 @@ int main(){
 
 //alocar memoria para depois realocar
     pessoa *dados = malloc(sizeof(pessoa));
+    gerente *equipe = malloc(sizeof(gerente));
     char comma[] = ",";
 
 //para aramzenar a quantidade de pessoas e separar os dados
     int i = 0;
+    int s = 0;
     while((fgets(linha, sizeof(linha), stdin)) != NULL){
         //sorting de dados
 
         dados = realloc(dados, sizeof(pessoa) * (i + 1));
         char *token = strtok(linha, comma);
         if(token != NULL){
-            dados[i].id = realloc(dados[i].id, sizeof(token));
-            strcpy(dados[i].id, token);
+            dados[i].id = atoi(token);
         }
         token = strtok(NULL, comma);
         if(token != NULL){
@@ -43,13 +50,18 @@ int main(){
         }
         token = strtok(NULL, comma);
         if(token != NULL){
-            dados[i].idEq = realloc(dados[i].idEq, sizeof(token));
-            strcpy(dados[i].idEq, token);
+            dados[i].idEq = atoi(token);
+            if(strcmp(dados[i].cargo, "gerente") == 0){
+                equipe = realloc(equipe, sizeof(gerente) + (s + 1));
+                equipe[s].nome = realloc(equipe[s].nome,sizeof(gerente) * (s + 1));
+                strcpy(equipe[s].nome, dados[i].nome);
+                dados[i].idEq = equipe[s].idEq;
+                s++;
+            }
         }
         token = strtok(NULL, comma);
         if(token != NULL){
-            dados[i].idVenda = realloc(dados[i].idVenda, sizeof(token));
-            strcpy(dados[i].idVenda, token);
+            dados[i].idVenda = atoi(token);
         }
         token = strtok(NULL, comma);
         if(token != NULL){
@@ -57,5 +69,36 @@ int main(){
         }
         i++;
     }
+
+    //variaveis para separar cada equipe
+
+    double totalVendas = 0;
+    int numEq = 0;
+    int equipesUnicas[100];
+
+    for(int j = 0; j < i; j++){
+        totalVendas+=dados[j].valVenda;
+    }
+    for(int j = 0; j < i; j++){
+        int found = 0;
+        for(int k = 0; k < numEq; k++){
+            if(equipesUnicas[k] == dados[j].idEq){
+                found = 1;
+                break;
+            }
+        }
+
+        if(!found){
+            equipesUnicas[numEq] = dados[j].idEq;
+            numEq++;
+        }
+    }
+    for(int j = 0; j < numEq; j++){
+        printf("%s, %i",equipe[j].nome, equipe[j].idEq);
+    }    
+
+
+
+
     return 0;
 }
