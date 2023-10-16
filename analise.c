@@ -12,6 +12,17 @@ typedef struct{
     char *nome;
 }gerente;
 
+/*
+typedef struct{
+    float vendas;
+    float maiorVenda;
+    int id;
+    int equipe;
+    char *cargo;
+    char *nome;
+}vendedor;
+*/
+
 typedef struct{
     int id;
     int idEq;
@@ -20,6 +31,8 @@ typedef struct{
     char *cargo;
     double valVenda;
     double maiorVenda;
+    int vendasUn;
+    double vendaTotal;
 }pessoa;
 
 int compare(const void *, const void * );
@@ -121,7 +134,7 @@ int main(){
     printf("Total de vendas da empresa: R$%s\n", totalCorrigido);
     printf("Total de vendas por equipe: \n");
 //definindo maiores vendas
-    double maiorVenda = 0;
+    double maiorVenda = -1;
     int eqVencedora;
     for(int j = 0; j < numEq; j++){
         char vendasEqCorrigido[1024];
@@ -141,11 +154,38 @@ int main(){
             printf("Gerente da equipe vencedora: %s\n", equipe[j].nome);
         }
     }
+
+    //vendas unicas
+    for(int j = 0; j < i; j++){
+        dados[j].vendasUn = 0;
+        for(int k = 0; k < i; k++){
+            if(strcmp(dados[j].nome, dados[k].nome) != 0 && dados[j].idVenda != dados[k].idVenda){
+                if(dados[j].vendasUn == 0){
+                    dados[j].maiorVenda = dados[j].valVenda;
+                    dados[j].vendaTotal = dados[j].valVenda;
+                }
+            }
+            if(strcmp(dados[j].nome, dados[k].nome) == 0 && dados[j].idVenda != dados[k].idVenda){
+                dados[j].vendasUn++;
+                dados[k].vendasUn++;
+                if(dados[j].valVenda > dados[k].valVenda){
+                    dados[j].maiorVenda = dados[j].valVenda;
+                    dados[k].maiorVenda = dados[j].valVenda;
+                    dados[j].vendaTotal = dados[j].valVenda + dados[k].valVenda;
+                } else if(dados[k].valVenda > dados[j].valVenda){
+                    dados[j].maiorVenda = dados[k].valVenda;
+                    dados[k].maiorVenda = dados[k].valVenda;
+                    dados[j].vendaTotal = dados[j].valVenda + dados[k].valVenda;
+                }
+            }
+        }
+    }
+
     double maiorVendaVend = 0;
     char *melhorVend = malloc(sizeof(char));
     for(int j = 0; j < i; j++){
-        if(dados[j].valVenda > maiorVendaVend){
-            maiorVendaVend = dados[j].valVenda;
+        if(dados[j].vendaTotal > maiorVendaVend){
+            maiorVendaVend = dados[j].vendaTotal;
             melhorVend = realloc(melhorVend, sizeof(strlen(dados[j].nome)));
             strcpy(melhorVend, dados[j].nome);
         }
@@ -165,26 +205,29 @@ int main(){
         char comissaoCorrigida[1024];
         char maiorVendaUnCorrigido[1024];
 
-        float maiorVendaUn = -1;
-        if(dados[j].valVenda > maiorVendaUn){
-            maiorVendaUn = dados[j].valVenda;
-        }
-        imprimirNumero(maiorVendaUn, maiorVendaUnCorrigido);
+        imprimirNumero(dados[j].maiorVenda, maiorVendaUnCorrigido);
 
-        imprimirNumero(dados[j].valVenda, numeroCorrigido);
+        imprimirNumero(dados[j].vendaTotal, numeroCorrigido);
+
+        for(int k = 0; k < i; k++){
+            if(strcmp(dados[j].nome, dados[k].nome) == 0 && dados[j].idVenda != dados[k].idVenda){
+                
+            }
+        }
+
 
         if(strcmp(dados[j].cargo, "gerente") == 0){
             break;
         }
 
         if(strcmp(dados[j].cargo, "junior") == 0){
-            comissao = (0.01*dados[j].valVenda);
+            comissao = (0.01*dados[j].vendaTotal);
         }
         if(strcmp(dados[j].cargo, "pleno") == 0){
-            comissao = (0.02*dados[j].valVenda);
+            comissao = (0.02*dados[j].vendaTotal);
         }
         if(strcmp(dados[j].cargo, "senior") == 0){
-            comissao = (0.03*dados[j].valVenda);
+            comissao = (0.03*dados[j].vendaTotal);
         }
 
         while(strlen(dados[j].nome) < 24){
