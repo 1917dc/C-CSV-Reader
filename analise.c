@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
+void imprimirNumero(double numero, char numeroFormatado[]);
 
 typedef struct{
     int idEq;
@@ -16,6 +19,7 @@ typedef struct{
     char *nome;
     char *cargo;
     double valVenda;
+    double maiorVenda;
 }pessoa;
 
 int compare(const void *, const void * );
@@ -64,7 +68,6 @@ int main(){
         }
         i++;
     }
-
     //variaveis para separar cada equipe
 
     double totalVendas = 0;
@@ -111,14 +114,23 @@ int main(){
         }
     }
 
+    char totalCorrigido[1024];
+    imprimirNumero(totalVendas, totalCorrigido);
+
     printf("Relatório de vendas: \n");
-    printf("Total de vendas da empresa: %f\n", totalVendas);
+    printf("Total de vendas da empresa: R$%s\n", totalCorrigido);
     printf("Total de vendas por equipe: \n");
 //definindo maiores vendas
     double maiorVenda = 0;
     int eqVencedora;
     for(int j = 0; j < numEq; j++){
-        printf("Equipe %i (Gerente: %s) - Vendas R$ %.2f - Comissão: R$ %.2f\n", equipesUnicas[j], equipe[j].nome, equipe[j].vendasEq, (equipe[j].vendasEq * 0.05));
+        char vendasEqCorrigido[1024];
+        char comissaoEqCorrigido[1024];
+
+        imprimirNumero((0,05 * equipe[j].vendasEq), comissaoEqCorrigido);
+        imprimirNumero(equipe[j].vendasEq, vendasEqCorrigido);
+
+        printf("Equipe %i (Gerente: %s) - Vendas R$ %s - Comissão: R$ %s\n", equipesUnicas[j], equipe[j].nome, vendasEqCorrigido, comissaoEqCorrigido);
         if(equipe[j].vendasEq > maiorVenda){
             maiorVenda = equipe[j].vendasEq;
             eqVencedora = equipesUnicas[j];
@@ -138,16 +150,32 @@ int main(){
             strcpy(melhorVend, dados[j].nome);
         }
     }
+
     printf("Melhor vendedor: %s\n", melhorVend);
 
     //variavel temporária
     double temp;
 
-    printf("Nome\t\t\tCargo\t\tEquipe\t\tTotal de Vendas\t\tComissão\n");
+    printf("Nome\t\t\t\t\tCargo\t\t\t\t\tEquipe\t\t\t\t\tTotal de Vendas\t\t\t\tMaior Venda\t\t\t\t\tComissão\n");
     qsort(dados, i, sizeof(pessoa), compare);
     for(int j = 0; j < i; j++){
         double comissao;
-        int cont = 0;
+        int maiorNome = 0;
+        char numeroCorrigido[1024];
+        char comissaoCorrigida[1024];
+        char maiorVendaUnCorrigido[1024];
+
+        float maiorVendaUn = -1;
+        if(dados[j].valVenda > maiorVendaUn){
+            maiorVendaUn = dados[j].valVenda;
+        }
+        imprimirNumero(maiorVendaUn, maiorVendaUnCorrigido);
+
+        imprimirNumero(dados[j].valVenda, numeroCorrigido);
+
+        if(strcmp(dados[j].cargo, "gerente") == 0){
+            break;
+        }
 
         if(strcmp(dados[j].cargo, "junior") == 0){
             comissao = (0.01*dados[j].valVenda);
@@ -159,9 +187,17 @@ int main(){
             comissao = (0.03*dados[j].valVenda);
         }
 
-        printf("%s\t\t\t%s\t\t%i\t%.2f\t\t%.2f", dados[j].nome,dados[j].cargo,dados[j].idEq,dados[j].valVenda, comissao);
-        printf("\n");
+        while(strlen(dados[j].nome) < 24){
+            strcat(dados[j].nome, " ");
+        }
+        while(strlen(dados[j].cargo) < 24){
+            strcat(dados[j].cargo, " ");
+        }
 
+        imprimirNumero(comissao, comissaoCorrigida);
+
+        printf("%s%s%-24.03iR$%-26sR$%-26sR$%-24s", dados[j].nome,dados[j].cargo,dados[j].idEq,numeroCorrigido, maiorVendaUnCorrigido,comissaoCorrigida);
+        printf("\n");
     }
 
     return 0;
@@ -171,4 +207,52 @@ int compare(const void *aptr, const void *bptr){
     float a = ((pessoa*)aptr)->valVenda;
     float b = ((pessoa*)bptr)->valVenda;
     return (a < b) - (a > b);
+}
+
+void imprimirNumero(double numero, char numeroFormatado[]) {
+    sprintf(numeroFormatado, "%.2lf", numero);
+    char novoNumero[100] = "";
+    
+
+    int i = 0, novoIndex = 0, espacados = 0, posicaoReal = 0;
+    
+    while (numeroFormatado[i] != '\0') {
+        if (numeroFormatado[i] == '.') {
+            numeroFormatado[i] = ',';
+            break;
+        }
+        i++;
+    }
+
+    while (numeroFormatado[novoIndex] != ',') {
+        novoIndex++;
+    }
+    
+    switch (novoIndex%3){
+    case 0:
+        posicaoReal = 0;
+        break;
+    
+    case 1:
+        posicaoReal = 2;
+        break;
+
+    case 2:
+        posicaoReal = 1;
+        break;
+    }
+
+    novoIndex = 0;
+    while (numeroFormatado[novoIndex] != '\0') {
+        if(posicaoReal != 0 && posicaoReal%3 == 0 && novoIndex < i){
+            novoNumero[strlen(novoNumero)] = '.';
+            posicaoReal = 0;
+        }
+        novoNumero[strlen(novoNumero)] = numeroFormatado[novoIndex];
+        posicaoReal++;
+        novoIndex++;
+    }
+
+    strcpy(numeroFormatado, novoNumero);
+
 }
