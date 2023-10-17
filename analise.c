@@ -215,7 +215,7 @@ int main(){
     printf("Gerente da equipe vencedora: %s\n", gerenteVencedor);
 
 
-    double maiorVendaVend = 0;
+    double maiorVendaVend = -1;
     char melhorVend[1000];
     for(int j = 0; j < indiceVendedor; j++){
         if(unico[j].vendas > maiorVendaVend){
@@ -226,7 +226,7 @@ int main(){
 
     printf("Melhor vendedor: %s\n", melhorVend);
 
-    printf("Nome\t\t\t\t\t\t\t\t\tCargo\t\t\t\t\tEquipe\t\t\t\t\tTotal de Vendas\t\t\t\tMaior Venda\t\t\t\t\tComissão\n");
+    printf("\nNome\t\t\t\t\t\t\t\t\tCargo\t\t\t\t\tEquipe\t\t\t\t\tTotal de Vendas\t\t\t\tMaior Venda\t\t\t\t\tComissão\n");
     qsort(unico, indiceVendedor, sizeof(vendedor), compare);
     for(int j = 0; j < indiceVendedor; j++){
         double comissao;

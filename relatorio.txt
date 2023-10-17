@@ -1,14 +1,19 @@
 Relatório de vendas: 
-Total de vendas da empresa: R$2.496.311,00
+Total de vendas da empresa: R$1.495.177,12
 Total de vendas por equipe: 
-Equipe 1 (Gerente: Norberto Espinoza) - Vendas R$ 2.348.622,00 - Comissão: R$ 11.743.110,00
-Equipe 2 (Gerente: Dominique Rodrigues) - Vendas R$ 147.689,00 - Comissão: R$ 738.445,00
-Gerente da equipe vencedora: Norberto Espinoza
-Melhor vendedor: Laura Cardozo Alves
+Equipe 2 (Gerente: Leandra Aquino Feitosa) - Vendas R$ 565.712,90 - Comissão: R$ 2.828.564,50
+Equipe 1 (Gerente: Akira Menezes Takatsu) - Vendas R$ 497.486,87 - Comissão: R$ 2.487.434,35
+Equipe 3 (Gerente: Jaques dos Santos Cavalcante) - Vendas R$ 431.977,39 - Comissão: R$ 2.159.886,95
+Gerente da equipe vencedora: Leandra Aquino Feitosa
+Melhor vendedor: Lydyane Kevany Kowalsky
+
 Nome									Cargo					Equipe					Total de Vendas				Maior Venda					Comissão
-Laura Cardozo Alves                     senior                  001                     R$2.235.000,00              R$2.235.000,00              R$67.050,00               
-Paulo Oliveira                          pleno                   002                     R$143.889,00                R$78.000,00                 R$2.877,78                
-Raquel Dourado                          pleno                   001                     R$85.365,00                 R$35.521,00                 R$1.707,30                
-Carlos Sánchez                         junior                  001                     R$23.155,00                 R$18.655,00                 R$231,55                  
-Arnaldo dos Santos                      junior                  001                     R$5.102,00                  R$5.102,00                  R$51,02                   
-Luana Fernandes                         junior                  002                     R$3.800,00                  R$3.800,00                  R$38,00                   
+Lydyane Kevany Kowalsky                 senior                  002                     R$349.958,53                R$196.333,88                R$10.498,76               
+Domingues Castro Alves                  senior                  003                     R$271.087,34                R$231.333,99                R$8.132,62                
+Perla da Silva Souza                    senior                  001                     R$231.087,01                R$135.882,36                R$6.932,61                
+Lydia Carmona Mesquita                  junior                  001                     R$151.091,63                R$67.475,11                 R$1.510,92                
+Valderrama dos Prazeres                 pleno                   002                     R$148.932,36                R$66.295,58                 R$2.978,65                
+Carlos Eduardo Cardoso Tomasini         pleno                   001                     R$115.308,23                R$67.158,24                 R$2.306,16                
+Francisco Cassiano Silva                pleno                   003                     R$83.136,16                 R$55.222,69                 R$1.662,72                
+Robson Fabiano Oliveira                 junior                  003                     R$77.753,89                 R$36.963,21                 R$777,54                  
+Emira da Costa Rodrigues                junior                  002                     R$66.822,01                 R$45.365,89                 R$668,22                  
