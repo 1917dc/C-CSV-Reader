@@ -9,25 +9,25 @@ typedef struct{
     int idEq;
     int id;
     double vendasEq;
-    char *nome;
+    char nome[1000];
 }gerente;
 
 typedef struct{
-    float vendas;
-    float maiorVenda;
+    double vendas;
+    double maiorVenda;
     int id;
     int equipe;
-    char *cargo;
-    char *nome;
-    float comissao;
+    char cargo[8];
+    char nome[1000];
+    double comissao;
 }vendedor;
 
 typedef struct{
     int id;
     int idEq;
     int idVenda;
-    char *nome;
-    char *cargo;
+    char nome[1000];
+    char cargo[8];
     double valVenda;
     double maiorVenda;
     int vendasUn;
@@ -40,17 +40,16 @@ int comparaGerente(const void *, const void * );
 
 int main(){
     char linha[1024];
-    char *lido = malloc(sizeof(char));
-    int t = 0;
 
 //alocar memoria para depois realocar
-    pessoa *dados = malloc(sizeof(pessoa));
+    pessoa *dados = malloc(sizeof(pessoa)*100);
     gerente *equipe = malloc(sizeof(gerente)*100);
-    vendedor *unico = malloc(sizeof(vendedor));
+    vendedor *unico = malloc(sizeof(vendedor)*100);
     char comma[] = ",";
 
 //para aramzenar a quantidade de pessoas e separar os dados
     int i = 0;
+
     while((fgets(linha, sizeof(linha), stdin)) != NULL){
         //sorting de dados
 
@@ -61,12 +60,10 @@ int main(){
         }
         token = strtok(NULL, comma);
         if(token != NULL){
-            dados[i].nome = malloc(sizeof(token) + 1);
             strcpy(dados[i].nome, token);
         }
         token = strtok(NULL, comma);
         if(token != NULL){
-            dados[i].cargo = malloc(sizeof(token) + 1);
             strcpy(dados[i].cargo, token);
             if(strcmp(dados[i].cargo, "gerente") == 0){
                 dados[i].valVenda = 0;
@@ -87,6 +84,7 @@ int main(){
         }
         i++;
     }
+
     //variaveis para separar cada equipe
 
     float totalVendas = 0;
@@ -112,7 +110,6 @@ int main(){
     for(int j = 0; j < numEq; j++){
         for(int k = 0; k < i; k++){
             if((strcmp(dados[k].cargo, "gerente") == 0) && (j+1) == dados[k].idEq){
-                equipe[j].nome = malloc(sizeof(strlen(dados[k].nome)) + 1);
                 strcpy(equipe[j].nome, dados[k].nome);
                 equipe[j].idEq = dados[k].idEq;
                 equipe[j].id = dados[k].id;
@@ -127,17 +124,14 @@ int main(){
             }
         }
     }
-
-
 //vendas unicas
     int indiceVendedor = 0;
     for(int j = 0; j < i; j++){
         dados[j].vendasUn = 0;
         int flag = -1;
-
         for(int k = 0; k < indiceVendedor; k++){
             if(dados[j].id == unico[k].id || strcmp(dados[j].cargo, "gerente") == 0){
-                flag = 1;
+                flag = 0;
                 unico[k].vendas += dados[j].valVenda;
                 if(unico[k].maiorVenda < dados[j].valVenda){
                     unico[k].maiorVenda = dados[j].valVenda;
@@ -151,19 +145,18 @@ int main(){
                 if(strcmp(unico[k].cargo, "senior") == 0){
                     unico[k].comissao = (unico[k].vendas * 0.03);
                 }
+
             } 
         } 
-
         if(flag == -1){
-            unico = realloc(unico,sizeof(vendedor) * (indiceVendedor + 1));
-            unico[indiceVendedor].nome = realloc(unico[indiceVendedor].nome, sizeof(strlen(dados[j].nome) +1));
+            unico = realloc(unico, sizeof(vendedor) * (indiceVendedor + 1));
             strcpy(unico[indiceVendedor].nome, dados[j].nome);
             unico[indiceVendedor].vendas = dados[j].valVenda;
             unico[indiceVendedor].id = dados[j].id;
-            unico[indiceVendedor].cargo = realloc(unico[indiceVendedor].cargo, sizeof(strlen(dados[j].cargo) +1));
             strcpy(unico[indiceVendedor].cargo, dados[j].cargo);
             unico[indiceVendedor].equipe = dados[j].idEq;
             unico[indiceVendedor].maiorVenda = dados[j].valVenda;
+            
             if(strcmp(unico[indiceVendedor].cargo, "junior") == 0){
                 unico[indiceVendedor].comissao = (dados[j].valVenda * 0.01);
             }
@@ -173,11 +166,10 @@ int main(){
             if(strcmp(unico[indiceVendedor].cargo, "senior") == 0){
                 unico[indiceVendedor].comissao = (dados[j].valVenda * 0.03);
             }
+
             indiceVendedor++;
         }
     }
-
-
 
 /*
         //calcular total de vendas
@@ -189,7 +181,7 @@ int main(){
         totalVendas += unico[j].vendas;
     }
 
-    char totalCorrigido[1024];
+    char totalCorrigido[500];
     imprimirNumero(totalVendas, totalCorrigido);
 
     printf("Relatório de vendas: \n");
@@ -222,54 +214,44 @@ int main(){
     
     printf("Gerente da equipe vencedora: %s\n", gerenteVencedor);
 
+
     double maiorVendaVend = 0;
-    char *melhorVend = malloc(sizeof(char));
-    for(int j = 0; j < i; j++){
-        if(dados[j].vendaTotal > maiorVendaVend){
-            maiorVendaVend = dados[j].vendaTotal;
-            melhorVend = realloc(melhorVend, sizeof(strlen(dados[j].nome)));
-            strcpy(melhorVend, dados[j].nome);
+    char melhorVend[1000];
+    for(int j = 0; j < indiceVendedor; j++){
+        if(unico[j].vendas > maiorVendaVend){
+            maiorVendaVend = unico[j].vendas;
+            strcpy(melhorVend, unico[j].nome);
         }
     }
 
     printf("Melhor vendedor: %s\n", melhorVend);
 
-    printf("Nome\t\t\t\t\tCargo\t\t\t\t\tEquipe\t\t\t\t\tTotal de Vendas\t\t\t\tMaior Venda\t\t\t\t\tComissão\n");
+    printf("Nome\t\t\t\t\t\t\t\t\tCargo\t\t\t\t\tEquipe\t\t\t\t\tTotal de Vendas\t\t\t\tMaior Venda\t\t\t\t\tComissão\n");
     qsort(unico, indiceVendedor, sizeof(vendedor), compare);
     for(int j = 0; j < indiceVendedor; j++){
         double comissao;
         int maiorNome = 0;
-        char numeroCorrigido[1024];
-        char comissaoCorrigida[1024];
-        char maiorVendaUnCorrigido[1024];
+        char numeroCorrigido[500];
+        char comissaoCorrigida[500];
+        char maiorVendaUnCorrigido[500];
 
         imprimirNumero(unico[j].maiorVenda, maiorVendaUnCorrigido);
 
         imprimirNumero(unico[j].vendas, numeroCorrigido);
 
 
-        if(strcmp(unico[j].cargo, "junior") == 0){
-            comissao = (0.01*unico[j].vendas);
-        }
-        if(strcmp(unico[j].cargo, "pleno") == 0){
-            comissao = (0.02*unico[j].vendas);
-        }
-        if(strcmp(unico[j].cargo, "senior") == 0){
-            comissao = (0.03*unico[j].vendas);
-        }
-
-        while(strlen(unico[j].nome) < 24){
-            strcat(unico[j].nome, " ");
-        }
-        while(strlen(unico[j].cargo) < 24){
-            strcat(unico[j].cargo, " ");
-        }
 
         imprimirNumero(unico[j].comissao, comissaoCorrigida);
 
-        printf("%s%s%-24.03iR$%-26sR$%-26sR$%-24s", unico[j].nome,unico[j].cargo,unico[j].equipe,numeroCorrigido, maiorVendaUnCorrigido,comissaoCorrigida);
+        if(strcmp(unico[j].cargo, "gerente") == 0){
+            break;
+        }
+
+        printf("%-40s%-24s%-24.03iR$%-26sR$%-26sR$%-24s", unico[j].nome,unico[j].cargo,unico[j].equipe,numeroCorrigido, maiorVendaUnCorrigido,comissaoCorrigida);
         printf("\n");
     }
+
+
 
     return 0;
 }

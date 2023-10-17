@@ -23,6 +23,8 @@ int main(int argc, char *argv[]){
     buffer[t - 1] = '\0';
     printf("%s", buffer);
     
+
+    fclose(arquivo);
     return 0;
 }
 
