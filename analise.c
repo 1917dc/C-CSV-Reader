@@ -35,6 +35,8 @@ typedef struct{
 }pessoa;
 
 int compare(const void *, const void * );
+int comparaGerente(const void *, const void * );
+
 
 int main(){
     char linha[1024];
@@ -59,13 +61,17 @@ int main(){
         }
         token = strtok(NULL, comma);
         if(token != NULL){
-            dados[i].nome = realloc(dados[i].nome, sizeof(token));
+            dados[i].nome = malloc(sizeof(token) + 1);
             strcpy(dados[i].nome, token);
         }
         token = strtok(NULL, comma);
         if(token != NULL){
-            dados[i].cargo = realloc(dados[i].cargo, sizeof(token));
+            dados[i].cargo = malloc(sizeof(token) + 1);
             strcpy(dados[i].cargo, token);
+            if(strcmp(dados[i].cargo, "gerente") == 0){
+                dados[i].valVenda = 0;
+                dados[i].maiorVenda = 0;
+            }
         }
         token = strtok(NULL, comma);
         if(token != NULL){
@@ -83,14 +89,9 @@ int main(){
     }
     //variaveis para separar cada equipe
 
-    double totalVendas = 0;
+    float totalVendas = 0;
     int numEq = 0;
     int equipesUnicas[100];
-
-//calcular total de vendas
-    for(int j = 0; j < i; j++){
-        totalVendas+=dados[j].valVenda;
-    }
 
     // identifica o numero de equipes e armazena caso tenha uma equipe nova
     for(int j = 0; j < i; j++){
@@ -111,7 +112,7 @@ int main(){
     for(int j = 0; j < numEq; j++){
         for(int k = 0; k < i; k++){
             if((strcmp(dados[k].cargo, "gerente") == 0) && (j+1) == dados[k].idEq){
-                equipe[j].nome = realloc(equipe[j].nome, sizeof(strlen(dados[k].nome)));
+                equipe[j].nome = malloc(sizeof(strlen(dados[k].nome)) + 1);
                 strcpy(equipe[j].nome, dados[k].nome);
                 equipe[j].idEq = dados[k].idEq;
                 equipe[j].id = dados[k].id;
@@ -127,33 +128,6 @@ int main(){
         }
     }
 
-    char totalCorrigido[1024];
-    imprimirNumero(totalVendas, totalCorrigido);
-
-    printf("Relatório de vendas: \n");
-    printf("Total de vendas da empresa: R$%s\n", totalCorrigido);
-    printf("Total de vendas por equipe: \n");
-//definindo maiores vendas
-    double maiorVenda = -1;
-    int eqVencedora;
-    for(int j = 0; j < numEq; j++){
-        char vendasEqCorrigido[1024];
-        char comissaoEqCorrigido[1024];
-
-        imprimirNumero((0,05 * equipe[j].vendasEq), comissaoEqCorrigido);
-        imprimirNumero(equipe[j].vendasEq, vendasEqCorrigido);
-
-        printf("Equipe %i (Gerente: %s) - Vendas R$ %s - Comissão: R$ %s\n", equipesUnicas[j], equipe[j].nome, vendasEqCorrigido, comissaoEqCorrigido);
-        if(equipe[j].vendasEq > maiorVenda){
-            maiorVenda = equipe[j].vendasEq;
-            eqVencedora = equipesUnicas[j];
-        }
-    }
-    for(int j = 0; j < numEq; j++){
-        if(eqVencedora == equipe[j].idEq){
-            printf("Gerente da equipe vencedora: %s\n", equipe[j].nome);
-        }
-    }
 
 //vendas unicas
     int indiceVendedor = 0;
@@ -205,6 +179,49 @@ int main(){
 
 
 
+/*
+        //calcular total de vendas
+    for(int j = 0; j < i; j++){
+        totalVendas+=dados[j].valVenda;
+    }
+*/   
+    for(int j = 0; j < indiceVendedor; j++){
+        totalVendas += unico[j].vendas;
+    }
+
+    char totalCorrigido[1024];
+    imprimirNumero(totalVendas, totalCorrigido);
+
+    printf("Relatório de vendas: \n");
+    printf("Total de vendas da empresa: R$%s\n", totalCorrigido);
+    printf("Total de vendas por equipe: \n");
+//definindo maiores vendas
+    double maiorVenda = -1, vendasTotais[100];
+    int eqVencedora, eqRep[numEq];
+    for(int j = 0; j < numEq; j++){
+        vendasTotais[j] = equipe[j].vendasEq;
+        eqRep[equipe[j].idEq] = -1;
+    }
+    char gerenteVencedor[100];
+    qsort(vendasTotais, numEq, sizeof(double), comparaGerente);
+    for(int j = 0; j < numEq; j++){
+        for(int k = 0; k < numEq; k++){
+            if(vendasTotais[j] == equipe[k].vendasEq && eqRep[equipe[k].idEq] == -1){
+                eqRep[equipe[k].idEq] = 0;
+                char vendasEqCorrigido[1024];
+                char comissaoEqCorrigido[1024];
+                imprimirNumero((0,05 * vendasTotais[j]), comissaoEqCorrigido);
+                imprimirNumero(vendasTotais[j], vendasEqCorrigido);
+                if(j == 0){
+                    strcpy(gerenteVencedor, equipe[k].nome);
+                }
+                printf("Equipe %i (Gerente: %s) - Vendas R$ %s - Comissão: R$ %s\n", equipe[k].idEq, equipe[k].nome, vendasEqCorrigido, comissaoEqCorrigido);
+            }
+        }
+    }
+    
+    printf("Gerente da equipe vencedora: %s\n", gerenteVencedor);
+
     double maiorVendaVend = 0;
     char *melhorVend = malloc(sizeof(char));
     for(int j = 0; j < i; j++){
@@ -216,7 +233,7 @@ int main(){
     }
 
     printf("Melhor vendedor: %s\n", melhorVend);
-    
+
     printf("Nome\t\t\t\t\tCargo\t\t\t\t\tEquipe\t\t\t\t\tTotal de Vendas\t\t\t\tMaior Venda\t\t\t\t\tComissão\n");
     qsort(unico, indiceVendedor, sizeof(vendedor), compare);
     for(int j = 0; j < indiceVendedor; j++){
@@ -261,6 +278,17 @@ int compare(const void *aptr, const void *bptr){
     float a = ((vendedor*)aptr)->vendas;
     float b = ((vendedor*)bptr)->vendas;
     return (a < b) - (a > b);
+}
+int comparaGerente(const void *aptr, const void *bptr){
+    double double_a = *((double *)aptr);
+    double double_b = *((double *)bptr);
+
+    if (double_a < double_b)
+        return 1;
+    else if (double_a > double_b)
+        return -1;
+    else
+        return 0;
 }
 
 void imprimirNumero(double numero, char numeroFormatado[]) {

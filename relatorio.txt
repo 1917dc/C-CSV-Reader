@@ -1,11 +1,11 @@
 Relatório de vendas: 
-Total de vendas da empresa: R$932.834.089.554,00
+Total de vendas da empresa: R$932.834.115.584,00
 Total de vendas por equipe: 
-Equipe 4 (Gerente: Norberto Espinoza) - Vendas R$ 4.559.467,00 - Comissão: R$ 22.797.335,00
-Equipe 1 (Gerente: Dominique Rodrigues) - Vendas R$ 147.689,00 - Comissão: R$ 738.445,00
-Equipe 2 (Gerente: Marco de Souza) - Vendas R$ 932.829.382.398,00 - Comissão: R$ 4.664.146.911.990,00
-Equipe 3 (Gerente: Batman) - Vendas R$ 0,00 - Comissão: R$ 0,00
-Gerente da equipe vencedora: Dominique Rodrigues
+Equipe 3 (Gerente: Marco de Souza) - Vendas R$ 932.829.382.398,00 - Comissão: R$ 4.664.146.911.990,00
+Equipe 1 (Gerente: Norberto Espinoza) - Vendas R$ 4.559.467,00 - Comissão: R$ 22.797.335,00
+Equipe 2 (Gerente: Dominique Rodrigues) - Vendas R$ 147.689,00 - Comissão: R$ 738.445,00
+Equipe 4 (Gerente: Batman) - Vendas R$ 0,00 - Comissão: R$ 0,00
+Gerente da equipe vencedora: Marco de Souza
 Melhor vendedor: 
 Nome					Cargo					Equipe					Total de Vendas				Maior Venda					Comissão
 Dr Mundo                pleno                   003                     R$932.829.396.992,00        R$932.829.396.992,00        R$18.656.587.776,00       
