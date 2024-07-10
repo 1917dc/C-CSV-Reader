@@ -1,5 +1,5 @@
 # relatorio
- Primeiro projto prático em C.
+ Primeiro projeto prático em C.
 
  - Para usar o relatório basta executar os seguintes programas:
     * ./leitura NOME DO ARQUIVO | ./analise | ./relatorio relatorio.txt
